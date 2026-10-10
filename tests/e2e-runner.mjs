@@ -3,7 +3,7 @@
  * Master E2E Test Suite Runner
  * Cloud Native Peshawar Automation Suite
  * 
- * Orchestrates the comprehensive 9-tier opaque-box E2E test suite:
+ * Orchestrates the comprehensive 10-tier opaque-box E2E test suite:
  * - Tier 1: Feature Coverage (F1 - F8)
  * - Tier 2: Boundary & Corner Cases (F1 - F8)
  * - Tier 3: Cross-Feature Integration (F1 - F8)
@@ -13,6 +13,7 @@
  * - Tier 7: Mobile Header Action Hierarchy
  * - Tier 8: Mobile Nav Drawer Overflow & Accessibility
  * - Tier 9: Mobile Touch Target Sizes
+ * - Tier 10: Mobile Nav Drawer Keyboard Accessibility
  * 
  * Usage:
  *   node tests/e2e-runner.mjs
@@ -28,12 +29,13 @@ import { runTier6Suite } from './tier6-hero-responsive.test.mjs';
 import { runTier7Suite } from './tier7-mobile-header.test.mjs';
 import { runTier8Suite } from './tier8-nav-drawer-overflow.test.mjs';
 import { runTier9Suite } from './tier9-touch-targets.test.mjs';
+import { runTier10Suite } from './tier10-nav-drawer-a11y.test.mjs';
 
 async function main() {
   const globalStart = Date.now();
 
   console.log(`\n================================================================================`);
-  console.log(`🚀 STARTING CLOUD NATIVE PESHAWAR AUTOMATION 9-TIER E2E TEST RUNNER`);
+  console.log(`🚀 STARTING CLOUD NATIVE PESHAWAR AUTOMATION 10-TIER E2E TEST RUNNER`);
   console.log(`================================================================================\n`);
 
   const results = [];
@@ -126,6 +128,16 @@ async function main() {
   } catch (err) {
     console.error('Fatal error in Tier 9:', err);
     results.push({ name: 'Tier 9: Mobile Touch Target Sizes', total: 0, passed: 0, failed: 1, error: err, timeMs: 0 });
+  }
+
+  // Run Tier 10
+  try {
+    const t10Start = Date.now();
+    const t10 = await runTier10Suite();
+    results.push({ name: 'Tier 10: Nav Drawer Keyboard Accessibility', ...t10, timeMs: Date.now() - t10Start });
+  } catch (err) {
+    console.error('Fatal error in Tier 10:', err);
+    results.push({ name: 'Tier 10: Nav Drawer Keyboard Accessibility', total: 0, passed: 0, failed: 1, error: err, timeMs: 0 });
   }
 
   const globalDuration = Date.now() - globalStart;
